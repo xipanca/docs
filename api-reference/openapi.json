@@ -1,216 +1,4832 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "openapi": "3.0.0",
   "paths": {
-    "/plants": {
+    "/user": {
+      "post": {
+        "operationId": "UserController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "operationId": "UserController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários."
+          },
+          "401": {
+            "description": "Não autorizado."
+          },
+          "403": {
+            "description": "Acesso proibido."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "operationId": "UserController_findOne",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "id",
+            "required": true,
+            "in": "path",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Usuário encontrado."
+          },
+          "401": {
+            "description": "Não autorizado."
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UserController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado."
+          },
+          "401": {
+            "description": "Não autorizado."
+          },
+          "403": {
+            "description": "Acesso proibido."
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "UserController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário removido."
+          },
+          "401": {
+            "description": "Não autorizado."
+          },
+          "403": {
+            "description": "Acesso proibido."
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "NotificationsController_getNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/read": {
+      "post": {
+        "operationId": "NotificationsController_markAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/read-all": {
+      "post": {
+        "operationId": "NotificationsController_markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/socket-notifications/user": {
+      "get": {
+        "operationId": "SocketNotificationsController_getUserNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de notificações recentes do usuário"
+          }
+        },
+        "summary": "Obter notificações recentes do usuário",
+        "tags": [
+          "socket-notifications"
+        ]
+      }
+    },
+    "/socket-notifications/broadcast": {
+      "get": {
+        "operationId": "SocketNotificationsController_getBroadcastNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de notificações recentes de broadcast"
+          }
+        },
+        "summary": "Obter notificações recentes de broadcast",
+        "tags": [
+          "socket-notifications"
+        ]
+      }
+    },
+    "/socket-notifications/combined": {
+      "get": {
+        "operationId": "SocketNotificationsController_getCombinedNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista combinada de notificações recentes"
+          }
+        },
+        "summary": "Obter todas as notificações recentes (usuário + broadcast)",
+        "tags": [
+          "socket-notifications"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido"
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          },
+          "429": {
+            "description": "Muitas tentativas de login"
+          }
+        },
+        "summary": "Login de usuário com email ou username",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Logout bem-sucedido"
+          },
+          "401": {
+            "description": "Não autenticado"
+          }
+        },
+        "summary": "Logout de usuário",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "operationId": "AuthController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Perfil do usuário"
+          },
+          "401": {
+            "description": "Não autenticado"
+          }
+        },
+        "summary": "Obter perfil do usuário",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/session-info": {
+      "get": {
+        "operationId": "AuthController_getSessionInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Informações da sessão"
+          },
+          "401": {
+            "description": "Não autenticado"
+          }
+        },
+        "summary": "Informações da sessão atual (requer autenticação)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/check": {
+      "get": {
+        "operationId": "AuthController_checkAuth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status da autenticação"
+          }
+        },
+        "summary": "Verificar se o usuário está autenticado",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/time-records/check-in": {
+      "post": {
+        "operationId": "TimeRecordController_checkIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTimeRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Check-in registrado com sucesso"
+          },
+          "400": {
+            "description": "Já existe um registro aberto"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Registrar check-in",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/check-out": {
+      "post": {
+        "operationId": "TimeRecordController_checkOut",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckOutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Check-out registrado com sucesso"
+          },
+          "404": {
+            "description": "Nenhum registro aberto encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Registrar check-out",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/{id}": {
+      "patch": {
+        "operationId": "TimeRecordController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTimeRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registro atualizado com sucesso"
+          },
+          "403": {
+            "description": "Você não tem permissão para editar este registro"
+          },
+          "404": {
+            "description": "Registro não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar registro de ponto",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/my-records": {
+      "get": {
+        "operationId": "TimeRecordController_findMyRecords",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de registros retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar registros do usuário",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records": {
+      "get": {
+        "operationId": "TimeRecordController_findAll",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de registros retornada com sucesso"
+          },
+          "403": {
+            "description": "Você não tem permissão para acessar esta rota"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar registros de todos os usuários",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/complete": {
+      "post": {
+        "operationId": "TimeRecordController_createComplete",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompleteTimeRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registro criado com sucesso"
+          },
+          "400": {
+            "description": "Já existe um registro para esta data ou check-out inválido"
+          },
+          "403": {
+            "description": "Você não tem permissão para criar registros manualmente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar registro completo manualmente",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/open": {
+      "get": {
+        "operationId": "TimeRecordController_findOpenTimeRecords",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de registros de ponto em aberto",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/TimeRecordListDto"
                   }
                 }
               }
             }
-          },
-          "400": {
-            "description": "Unexpected error",
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os registros de ponto em aberto",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/today-and-open": {
+      "get": {
+        "operationId": "TimeRecordController_findTodayAndOpenRecords",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de registros do dia atual e em aberto de todos os usuários",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimeRecordListDto"
+                  }
                 }
               }
             }
           }
-        }
-      },
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar registros do dia atual e em aberto de todos os usuários",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/time-records/paginated": {
+      "get": {
+        "operationId": "TimeRecordController_findAllWithPagination",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de registros com paginação"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar registros com paginação",
+        "tags": [
+          "time-records"
+        ]
+      }
+    },
+    "/email/send": {
       "post": {
-        "description": "Creates a new plant in the store",
+        "operationId": "EmailController_sendEmail",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Email"
+        ]
+      }
+    },
+    "/teams": {
+      "post": {
+        "operationId": "TeamController_create",
+        "parameters": [],
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                "$ref": "#/components/schemas/CreateTeamDto"
               }
             }
           }
-        }
+        },
+        "responses": {
+          "201": {
+            "description": "Equipe criada com sucesso"
+          },
+          "403": {
+            "description": "Sem permissão para criar equipes"
+          }
+        },
+        "summary": "Criar uma nova equipe",
+        "tags": [
+          "Equipes"
+        ]
+      },
+      "get": {
+        "operationId": "TeamController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de equipes retornada"
+          }
+        },
+        "summary": "Listar todas as equipes",
+        "tags": [
+          "Equipes"
+        ]
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/teams/{id}": {
+      "get": {
+        "operationId": "TeamController_findOne",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
+            "in": "path",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "200": {
+            "description": "Equipe encontrada"
           },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
+          "404": {
+            "description": "Equipe não encontrada"
+          }
+        },
+        "summary": "Buscar uma equipe pelo ID",
+        "tags": [
+          "Equipes"
+        ]
+      },
+      "patch": {
+        "operationId": "TeamController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
             }
           }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
+        ],
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/UpdateTeamDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+            "description": "Equipe atualizada com sucesso"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "403": {
+            "description": "Sem permissão para atualizar equipes"
+          },
+          "404": {
+            "description": "Equipe não encontrada"
           }
-        }
+        },
+        "summary": "Atualizar uma equipe",
+        "tags": [
+          "Equipes"
+        ]
       },
-      "NewPlant": {
-        "allOf": [
+      "delete": {
+        "operationId": "TeamController_remove",
+        "parameters": [
           {
-            "$ref": "#/components/schemas/Plant"
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipe removida com sucesso"
           },
+          "403": {
+            "description": "Sem permissão para remover equipes"
+          },
+          "404": {
+            "description": "Equipe não encontrada"
+          }
+        },
+        "summary": "Remover uma equipe",
+        "tags": [
+          "Equipes"
+        ]
+      }
+    },
+    "/teams/{id}/members": {
+      "post": {
+        "operationId": "TeamController_addMember",
+        "parameters": [
           {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddTeamMemberDto"
               }
             }
           }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+        },
+        "responses": {
+          "201": {
+            "description": "Membro adicionado com sucesso"
           },
-          "message": {
-            "type": "string"
+          "400": {
+            "description": "Usuário já é membro desta equipe"
+          },
+          "403": {
+            "description": "Sem permissão para adicionar membros"
+          },
+          "404": {
+            "description": "Equipe não encontrada"
           }
-        }
+        },
+        "summary": "Adicionar um membro à equipe",
+        "tags": [
+          "Equipes"
+        ]
       }
     },
+    "/teams/{id}/members/{userId}": {
+      "patch": {
+        "operationId": "TeamController_updateMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTeamMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Função do membro atualizada com sucesso"
+          },
+          "403": {
+            "description": "Sem permissão para atualizar membros"
+          },
+          "404": {
+            "description": "Equipe ou membro não encontrado"
+          }
+        },
+        "summary": "Atualizar função do membro na equipe",
+        "tags": [
+          "Equipes"
+        ]
+      },
+      "delete": {
+        "operationId": "TeamController_removeMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Membro removido com sucesso"
+          },
+          "403": {
+            "description": "Sem permissão para remover membros"
+          },
+          "404": {
+            "description": "Equipe ou membro não encontrado"
+          }
+        },
+        "summary": "Remover um membro da equipe",
+        "tags": [
+          "Equipes"
+        ]
+      }
+    },
+    "/service-orders": {
+      "post": {
+        "operationId": "ServiceOrderController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ordem de serviço criada com sucesso"
+          },
+          "403": {
+            "description": "Sem permissão para criar ordens de serviço"
+          }
+        },
+        "summary": "Criar uma nova ordem de serviço",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      },
+      "get": {
+        "operationId": "ServiceOrderController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de ordens de serviço retornada"
+          }
+        },
+        "summary": "Listar todas as ordens de serviço",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      }
+    },
+    "/service-orders/my-orders": {
+      "get": {
+        "operationId": "ServiceOrderController_findUserRelatedOrders",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de ordens de serviço retornada"
+          }
+        },
+        "summary": "Listar ordens de serviço associadas ao usuário",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      }
+    },
+    "/service-orders/{id}": {
+      "get": {
+        "operationId": "ServiceOrderController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordem de serviço encontrada"
+          },
+          "404": {
+            "description": "Ordem de serviço não encontrada"
+          }
+        },
+        "summary": "Buscar uma ordem de serviço pelo ID",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      },
+      "patch": {
+        "operationId": "ServiceOrderController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ordem de serviço atualizada com sucesso"
+          },
+          "403": {
+            "description": "Sem permissão para atualizar ordens de serviço"
+          },
+          "404": {
+            "description": "Ordem de serviço não encontrada"
+          }
+        },
+        "summary": "Atualizar uma ordem de serviço",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      },
+      "delete": {
+        "operationId": "ServiceOrderController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordem de serviço removida com sucesso"
+          },
+          "403": {
+            "description": "Sem permissão para remover ordens de serviço"
+          },
+          "404": {
+            "description": "Ordem de serviço não encontrada"
+          }
+        },
+        "summary": "Remover uma ordem de serviço",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      }
+    },
+    "/service-orders/{id}/updates": {
+      "post": {
+        "operationId": "ServiceOrderController_createUpdate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceOrderUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Atualização adicionada com sucesso"
+          },
+          "404": {
+            "description": "Ordem de serviço não encontrada"
+          }
+        },
+        "summary": "Adicionar uma atualização à ordem de serviço",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      }
+    },
+    "/service-orders/{id}/materials/{materialId}/mark-used": {
+      "post": {
+        "operationId": "ServiceOrderController_markMaterialAsUsed",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "materialId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material marcado como utilizado com sucesso"
+          },
+          "400": {
+            "description": "Material já foi marcado como utilizado"
+          },
+          "404": {
+            "description": "Material ou ordem de serviço não encontrada"
+          }
+        },
+        "summary": "Marcar material como utilizado",
+        "tags": [
+          "Ordens de Serviço"
+        ]
+      }
+    },
+    "/product": {
+      "post": {
+        "operationId": "ProductController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "403": {
+            "description": "Sem permissão para criar ordens de serviço"
+          }
+        },
+        "tags": [
+          "Produtos"
+        ]
+      },
+      "get": {
+        "operationId": "ProductController_findAll",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "brand",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minStock",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/{id}": {
+      "get": {
+        "operationId": "ProductController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Produtos"
+        ]
+      },
+      "patch": {
+        "operationId": "ProductController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Produtos"
+        ]
+      },
+      "delete": {
+        "operationId": "ProductController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/{id}/stock": {
+      "patch": {
+        "operationId": "ProductController_adjustStock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/location/search": {
+      "get": {
+        "operationId": "ProductController_findByLocation",
+        "parameters": [
+          {
+            "name": "sector",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "aisle",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shelf",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "position",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos encontrados."
+          }
+        },
+        "summary": "Buscar produtos por localização",
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/location/sector/{sector}": {
+      "get": {
+        "operationId": "ProductController_findBySector",
+        "parameters": [
+          {
+            "name": "sector",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos encontrados no setor."
+          }
+        },
+        "summary": "Buscar produtos por setor",
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/location/aisle/{sector}/{aisle}": {
+      "get": {
+        "operationId": "ProductController_findByAisle",
+        "parameters": [
+          {
+            "name": "sector",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "aisle",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos encontrados no corredor."
+          }
+        },
+        "summary": "Buscar produtos por corredor",
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/location/shelf/{sector}/{aisle}/{shelf}": {
+      "get": {
+        "operationId": "ProductController_findByShelf",
+        "parameters": [
+          {
+            "name": "sector",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "aisle",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shelf",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos encontrados na prateleira."
+          }
+        },
+        "summary": "Buscar produtos por prateleira",
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/location/position/{sector}/{aisle}/{shelf}/{position}": {
+      "get": {
+        "operationId": "ProductController_findByPosition",
+        "parameters": [
+          {
+            "name": "sector",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "aisle",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shelf",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "position",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos encontrados na posição."
+          }
+        },
+        "summary": "Buscar produtos por posição específica",
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product/location/pattern/{pattern}": {
+      "get": {
+        "operationId": "ProductController_findByLocationPattern",
+        "parameters": [
+          {
+            "name": "pattern",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos que correspondem ao padrão de localização."
+          }
+        },
+        "summary": "Buscar produtos por padrão de localização",
+        "tags": [
+          "Produtos"
+        ]
+      }
+    },
+    "/product-audit": {
+      "get": {
+        "operationId": "ProductAuditController_findAll",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "ID do produto para filtrar logs",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "ID do usuário que realizou a alteração",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Tipo de operação",
+            "schema": {
+              "example": "ADDITION",
+              "type": "string",
+              "enum": [
+                "ADDITION",
+                "REMOVAL",
+                "ADJUSTMENT"
+              ]
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Data de início (formato ISO)",
+            "schema": {
+              "example": "2023-01-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "Data de fim (formato ISO)",
+            "schema": {
+              "example": "2023-12-31T23:59:59Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Página atual para paginação",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Registros por página",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de logs de auditoria de produtos com paginação"
+          }
+        },
+        "summary": "Obter logs de auditoria de produtos com filtros",
+        "tags": [
+          "product-audit"
+        ]
+      }
+    },
+    "/product-audit/product/{productId}": {
+      "get": {
+        "operationId": "ProductAuditController_findByProductId",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de logs de auditoria do produto com paginação"
+          }
+        },
+        "summary": "Obter logs de auditoria de um produto específico",
+        "tags": [
+          "product-audit"
+        ]
+      }
+    },
+    "/product-audit/{id}": {
+      "get": {
+        "operationId": "ProductAuditController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do log de auditoria"
+          },
+          "404": {
+            "description": "Log de auditoria não encontrado"
+          }
+        },
+        "summary": "Obter log de auditoria de produto por ID",
+        "tags": [
+          "product-audit"
+        ]
+      }
+    },
+    "/quotations": {
+      "post": {
+        "operationId": "QuotationController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuotationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cotação criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar cotação",
+        "tags": [
+          "quotations"
+        ]
+      },
+      "get": {
+        "operationId": "QuotationController_findAll",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cotações"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as cotações",
+        "tags": [
+          "quotations"
+        ]
+      }
+    },
+    "/quotations/{id}": {
+      "get": {
+        "operationId": "QuotationController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cotação retornada com sucesso"
+          },
+          "404": {
+            "description": "Cotação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar cotação por ID",
+        "tags": [
+          "quotations"
+        ]
+      },
+      "patch": {
+        "operationId": "QuotationController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuotationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cotação atualizada com sucesso"
+          },
+          "404": {
+            "description": "Cotação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar cotação",
+        "tags": [
+          "quotations"
+        ]
+      },
+      "delete": {
+        "operationId": "QuotationController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cotação removida com sucesso"
+          },
+          "404": {
+            "description": "Cotação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover cotação",
+        "tags": [
+          "quotations"
+        ]
+      }
+    },
+    "/quotations/client/{clientId}": {
+      "get": {
+        "operationId": "QuotationController_findByClient",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cotações do cliente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar cotações de um cliente",
+        "tags": [
+          "quotations"
+        ]
+      }
+    },
+    "/quotations/{id}/status": {
+      "patch": {
+        "operationId": "QuotationController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          },
+          "404": {
+            "description": "Cotação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status da cotação",
+        "tags": [
+          "quotations"
+        ]
+      }
+    },
+    "/quotations/{id}/approve": {
+      "post": {
+        "operationId": "QuotationController_approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveQuotationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cotação atualizada com sucesso"
+          },
+          "404": {
+            "description": "Cotação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Aprovar ou rejeitar uma cotação",
+        "tags": [
+          "quotations"
+        ]
+      }
+    },
+    "/quotations/{id}/send-email": {
+      "post": {
+        "operationId": "QuotationController_sendEmail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email enviado com sucesso"
+          },
+          "404": {
+            "description": "Cotação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Enviar cotação por email",
+        "tags": [
+          "quotations"
+        ]
+      }
+    },
+    "/clients": {
+      "post": {
+        "operationId": "ClientController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso."
+          },
+          "409": {
+            "description": "Email ou documento já cadastrado."
+          }
+        },
+        "summary": "Criar um novo cliente",
+        "tags": [
+          "Clientes"
+        ]
+      },
+      "get": {
+        "operationId": "ClientController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de clientes retornada com sucesso."
+          }
+        },
+        "summary": "Listar todos os clientes",
+        "tags": [
+          "Clientes"
+        ]
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "operationId": "ClientController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente encontrado com sucesso."
+          },
+          "404": {
+            "description": "Cliente não encontrado."
+          }
+        },
+        "summary": "Buscar um cliente pelo ID",
+        "tags": [
+          "Clientes"
+        ]
+      },
+      "patch": {
+        "operationId": "ClientController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente atualizado com sucesso."
+          },
+          "404": {
+            "description": "Cliente não encontrado."
+          },
+          "409": {
+            "description": "Email ou documento já cadastrado."
+          }
+        },
+        "summary": "Atualizar um cliente",
+        "tags": [
+          "Clientes"
+        ]
+      },
+      "delete": {
+        "operationId": "ClientController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente desativado com sucesso."
+          },
+          "404": {
+            "description": "Cliente não encontrado."
+          }
+        },
+        "summary": "Desativar um cliente",
+        "tags": [
+          "Clientes"
+        ]
+      }
+    },
+    "/payments": {
+      "post": {
+        "operationId": "PaymentController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pagamento criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos ou não há registros para pagamento"
+          },
+          "403": {
+            "description": "Você não tem permissão para criar pagamentos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar pagamento",
+        "tags": [
+          "payments"
+        ]
+      },
+      "get": {
+        "operationId": "PaymentController_findAll",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pagamentos retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os pagamentos",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/unpaid-time-records/{userId}": {
+      "get": {
+        "operationId": "PaymentController_findUnpaidTimeRecords",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de registros retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar registros de tempo não pagos de um usuário",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/compensations": {
+      "get": {
+        "operationId": "PaymentController_findAllCompensations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de compensações retornada com sucesso"
+          },
+          "403": {
+            "description": "Você não tem permissão para listar compensações"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as compensações",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "operationId": "PaymentController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagamento encontrado"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar pagamento por ID",
+        "tags": [
+          "payments"
+        ]
+      },
+      "patch": {
+        "operationId": "PaymentController_updatePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pagamento atualizado com sucesso"
+          },
+          "400": {
+            "description": "Pagamento cancelado não pode ser atualizado"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar pagamento",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/user/{userId}": {
+      "get": {
+        "operationId": "PaymentController_findByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pagamentos retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar pagamentos de um usuário",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/advances": {
+      "post": {
+        "operationId": "PaymentController_createAdvance",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdvanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Adiantamento criado com sucesso"
+          },
+          "403": {
+            "description": "Você não tem permissão para criar adiantamentos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar adiantamento",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/advances/all": {
+      "get": {
+        "operationId": "PaymentController_findAllAdvances",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de adiantamentos retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os adiantamentos",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/advances/{id}": {
+      "get": {
+        "operationId": "PaymentController_findAdvance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adiantamento encontrado"
+          },
+          "404": {
+            "description": "Adiantamento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar adiantamento por ID",
+        "tags": [
+          "payments"
+        ]
+      },
+      "delete": {
+        "operationId": "PaymentController_deleteAdvance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adiantamento deletado com sucesso"
+          },
+          "400": {
+            "description": "Não é possível deletar um adiantamento que já possui parcelas pagas"
+          },
+          "404": {
+            "description": "Adiantamento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deletar adiantamento",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/advances/user/{userId}": {
+      "get": {
+        "operationId": "PaymentController_findAdvancesByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de adiantamentos retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar adiantamentos de um usuário",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/report/{startDate}/{endDate}": {
+      "get": {
+        "operationId": "PaymentController_generateReport",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relatório gerado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gerar relatório de pagamentos",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/{id}/receipt": {
+      "get": {
+        "operationId": "PaymentController_generateReceipt",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comprovante gerado com sucesso"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gerar comprovante de pagamento",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/compensation": {
+      "post": {
+        "operationId": "PaymentController_createEmployeeCompensation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompensationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Compaensação criada com sucesso"
+          },
+          "403": {
+            "description": "Você não tem permissão para criar compensações"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar compensação de funcionário",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/compensation/user/{userId}": {
+      "get": {
+        "operationId": "PaymentController_getEmployeeCompensation",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compaensação retornada com sucesso"
+          },
+          "404": {
+            "description": "Compaensação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter compensação de funcionário",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/compensation/{id}": {
+      "patch": {
+        "operationId": "PaymentController_updateEmployeeCompensation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompensationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Compensação atualizada com sucesso"
+          },
+          "404": {
+            "description": "Compensação não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar compensação de funcionário",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/{id}/cancel": {
+      "patch": {
+        "operationId": "PaymentController_cancelPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagamento cancelado com sucesso"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancelar pagamento",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/batch": {
+      "post": {
+        "operationId": "PaymentController_generateBatch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateBatchPaymentsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pagamentos gerados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gerar pagamentos em lote para todos os funcionários ativos",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/sms/send": {
+      "post": {
+        "operationId": "SmsController_sendSms",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Sms"
+        ]
+      }
+    },
+    "/contacts": {
+      "get": {
+        "operationId": "ContactController_getAllContacts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    },
+    "/contacts/type/{type}": {
+      "get": {
+        "operationId": "ContactController_getContactsByType",
+        "parameters": [
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    },
+    "/contacts/search": {
+      "get": {
+        "operationId": "ContactController_searchContacts",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    },
+    "/contacts/user/{userId}": {
+      "post": {
+        "operationId": "ContactController_createContactFromUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    },
+    "/contacts/client/{clientId}": {
+      "post": {
+        "operationId": "ContactController_createContactFromClient",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    },
+    "/schedule": {
+      "post": {
+        "operationId": "ScheduleController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Schedule"
+        ]
+      },
+      "get": {
+        "operationId": "ScheduleController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
+    "/schedule/{id}": {
+      "get": {
+        "operationId": "ScheduleController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Schedule"
+        ]
+      }
+    },
+    "/services": {
+      "post": {
+        "operationId": "ServicesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Serviço criado com sucesso"
+          }
+        },
+        "summary": "Criar um novo serviço",
+        "tags": [
+          "services"
+        ]
+      },
+      "get": {
+        "operationId": "ServicesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de serviços retornada com sucesso"
+          }
+        },
+        "summary": "Listar todos os serviços",
+        "tags": [
+          "services"
+        ]
+      }
+    },
+    "/services/search": {
+      "get": {
+        "operationId": "ServicesController_findByName",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Serviços encontrados com sucesso"
+          }
+        },
+        "summary": "Buscar serviços por nome",
+        "tags": [
+          "services"
+        ]
+      }
+    },
+    "/services/{id}": {
+      "get": {
+        "operationId": "ServicesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Serviço encontrado com sucesso"
+          }
+        },
+        "summary": "Buscar um serviço por ID",
+        "tags": [
+          "services"
+        ]
+      },
+      "patch": {
+        "operationId": "ServicesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Serviço atualizado com sucesso"
+          }
+        },
+        "summary": "Atualizar um serviço",
+        "tags": [
+          "services"
+        ]
+      },
+      "delete": {
+        "operationId": "ServicesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Serviço removido com sucesso"
+          }
+        },
+        "summary": "Remover um serviço",
+        "tags": [
+          "services"
+        ]
+      }
+    },
+    "/invoices": {
+      "post": {
+        "operationId": "InvoiceController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvoiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar invoice a partir de uma cotação",
+        "tags": [
+          "invoices"
+        ]
+      },
+      "get": {
+        "operationId": "InvoiceController_findAll",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de invoices"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as invoices",
+        "tags": [
+          "invoices"
+        ]
+      }
+    },
+    "/invoices/{id}": {
+      "get": {
+        "operationId": "InvoiceController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice retornada com sucesso"
+          },
+          "404": {
+            "description": "Invoice não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar invoice por ID",
+        "tags": [
+          "invoices"
+        ]
+      },
+      "patch": {
+        "operationId": "InvoiceController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInvoiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoice atualizada com sucesso"
+          },
+          "404": {
+            "description": "Invoice não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar invoice",
+        "tags": [
+          "invoices"
+        ]
+      }
+    },
+    "/invoices/client/{clientId}": {
+      "get": {
+        "operationId": "InvoiceController_findByClient",
+        "parameters": [
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de invoices do cliente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar invoices de um cliente",
+        "tags": [
+          "invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/send-email": {
+      "post": {
+        "operationId": "InvoiceController_sendEmail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email enviado com sucesso"
+          },
+          "404": {
+            "description": "Invoice não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Enviar invoice por email",
+        "tags": [
+          "invoices"
+        ]
+      }
+    },
+    "/invoices/{id}/payment-status": {
+      "get": {
+        "operationId": "InvoiceController_checkPaymentStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status retornado com sucesso"
+          },
+          "404": {
+            "description": "Invoice não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Verificar status de pagamento",
+        "tags": [
+          "invoices"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "VIP HVAC API",
+    "description": "API de gerenciamento empresarial",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "https://api.viphvac.dev"
+    }
+  ],
+  "components": {
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "connect.sid"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome completo do usuário",
+            "example": "João Silva"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email do usuário",
+            "example": "joao.silva@email.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Senha do usuário (mínimo 6 caracteres)",
+            "example": "senha123",
+            "minLength": 6
+          },
+          "userName": {
+            "type": "string",
+            "description": "Nome de usuário (3-12 caracteres)",
+            "example": "joaosilva",
+            "minLength": 3,
+            "maxLength": 12
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "ID do dispositivo do usuário",
+            "example": "device-123"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "URL do avatar do usuário",
+            "example": "https://storage.example.com/avatars/user123.jpg"
+          },
+          "role": {
+            "type": "string",
+            "description": "Função do usuário",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "EMPLOYEE"
+            ],
+            "example": "EMPLOYEE",
+            "default": "EMPLOYEE"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password",
+          "userName"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome completo do usuário",
+            "example": "João Silva"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email do usuário",
+            "example": "joao.silva@email.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Senha do usuário (mínimo 6 caracteres)",
+            "example": "senha123",
+            "minLength": 6
+          },
+          "userName": {
+            "type": "string",
+            "description": "Nome de usuário (3-12 caracteres)",
+            "example": "joaosilva",
+            "minLength": 3,
+            "maxLength": 12
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "ID do dispositivo do usuário",
+            "example": "device-123"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "URL do avatar do usuário",
+            "example": "https://storage.example.com/avatars/user123.jpg"
+          },
+          "role": {
+            "type": "string",
+            "description": "Função/Papel do usuário no sistema",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "EMPLOYEE"
+            ],
+            "example": "EMPLOYEE",
+            "default": "EMPLOYEE"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status de ativação do usuário",
+            "example": true
+          }
+        }
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "Email ou nome de usuário para login"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "identifier",
+          "password"
+        ]
+      },
+      "TimeRecordType": {
+        "type": "string",
+        "enum": [
+          "REGULAR",
+          "EXTRA",
+          "OVERTIME"
+        ],
+        "description": "Tipo do registro de tempo"
+      },
+      "CreateTimeRecordDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Tipo do registro de tempo",
+            "example": "REGULAR",
+            "examples": {
+              "REGULAR": {
+                "value": "REGULAR",
+                "description": "Registro regular de trabalho"
+              },
+              "EXTRA": {
+                "value": "EXTRA",
+                "description": "Hora extra"
+              },
+              "OVERTIME": {
+                "value": "OVERTIME",
+                "description": "Hora extra noturna"
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeRecordType"
+              }
+            ]
+          },
+          "checkInLatitude": {
+            "type": "number",
+            "description": "Latitude da localização",
+            "example": -23.55052
+          },
+          "checkInLongitude": {
+            "type": "number",
+            "description": "Longitude da localização",
+            "example": -46.633308
+          }
+        },
+        "required": [
+          "type",
+          "checkInLatitude",
+          "checkInLongitude"
+        ]
+      },
+      "CheckOutDto": {
+        "type": "object",
+        "properties": {
+          "checkOutLatitude": {
+            "type": "number",
+            "description": "Latitude da localização do check-out",
+            "example": -23.55052
+          },
+          "checkOutLongitude": {
+            "type": "number",
+            "description": "Longitude da localização do check-out",
+            "example": -46.633308
+          }
+        },
+        "required": [
+          "checkOutLatitude",
+          "checkOutLongitude"
+        ]
+      },
+      "UpdateTimeRecordDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Tipo do registro de tempo",
+            "example": "REGULAR",
+            "examples": {
+              "REGULAR": {
+                "value": "REGULAR",
+                "description": "Registro regular de trabalho"
+              },
+              "EXTRA": {
+                "value": "EXTRA",
+                "description": "Hora extra"
+              },
+              "OVERTIME": {
+                "value": "OVERTIME",
+                "description": "Hora extra noturna"
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeRecordType"
+              }
+            ]
+          },
+          "checkIn": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data e hora do check-in",
+            "example": "2024-03-26T08:00:00Z"
+          },
+          "checkOut": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data e hora do check-out",
+            "example": "2024-03-26T12:00:00Z"
+          },
+          "checkInLatitude": {
+            "type": "number",
+            "description": "Latitude da localização do check-in",
+            "example": -23.55052
+          },
+          "checkInLongitude": {
+            "type": "number",
+            "description": "Longitude da localização do check-in",
+            "example": -46.633308
+          },
+          "checkOutLatitude": {
+            "type": "number",
+            "description": "Latitude da localização do check-out",
+            "example": -23.55052
+          },
+          "checkOutLongitude": {
+            "type": "number",
+            "description": "Longitude da localização do check-out",
+            "example": -46.633308
+          }
+        }
+      },
+      "CreateCompleteTimeRecordDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID do usuário",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data do registro",
+            "example": "2024-03-26"
+          },
+          "type": {
+            "description": "Tipo do registro de tempo",
+            "example": "REGULAR",
+            "examples": {
+              "REGULAR": {
+                "value": "REGULAR",
+                "description": "Registro regular de trabalho"
+              },
+              "EXTRA": {
+                "value": "EXTRA",
+                "description": "Hora extra"
+              },
+              "OVERTIME": {
+                "value": "OVERTIME",
+                "description": "Hora extra noturna"
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeRecordType"
+              }
+            ]
+          },
+          "checkIn": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data e hora do check-in",
+            "example": "2024-03-26T08:00:00Z"
+          },
+          "checkOut": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data e hora do check-out",
+            "example": "2024-03-26T12:00:00Z"
+          },
+          "checkInLatitude": {
+            "type": "number",
+            "description": "Latitude da localização do check-in",
+            "example": -23.55052
+          },
+          "checkInLongitude": {
+            "type": "number",
+            "description": "Longitude da localização do check-in",
+            "example": -46.633308
+          },
+          "checkOutLatitude": {
+            "type": "number",
+            "description": "Latitude da localização do check-out",
+            "example": -23.55052
+          },
+          "checkOutLongitude": {
+            "type": "number",
+            "description": "Longitude da localização do check-out",
+            "example": -46.633308
+          }
+        },
+        "required": [
+          "userId",
+          "date",
+          "type",
+          "checkIn",
+          "checkOut",
+          "checkInLatitude",
+          "checkInLongitude",
+          "checkOutLatitude",
+          "checkOutLongitude"
+        ]
+      },
+      "TimeRecordListDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID do registro",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "date": {
+            "type": "string",
+            "description": "Data do registro",
+            "example": "2024-03-26"
+          },
+          "user": {
+            "type": "object",
+            "description": "Informações do usuário",
+            "example": {
+              "id": "123e4567-e89b-12d3-a456-426614174000",
+              "name": "João Silva",
+              "userName": "joao.silva"
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo do registro",
+            "enum": [
+              "REGULAR",
+              "EXTRA",
+              "OVERTIME"
+            ],
+            "example": "REGULAR"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Horário de entrada",
+            "example": "2024-03-26T08:00:00Z"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Horário de saída",
+            "example": "2024-03-26T12:00:00Z"
+          },
+          "hours": {
+            "type": "number",
+            "description": "Total de horas trabalhadas",
+            "example": 4
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do registro",
+            "example": "CLOSED"
+          },
+          "checkInLatitude": {
+            "type": "number",
+            "description": "Latitude do ponto de entrada",
+            "example": -23.55052
+          },
+          "checkInLongitude": {
+            "type": "number",
+            "description": "Longitude do ponto de entrada",
+            "example": -46.633308
+          },
+          "checkOutLatitude": {
+            "type": "number",
+            "description": "Latitude do ponto de saída",
+            "example": -23.55052
+          },
+          "checkOutLongitude": {
+            "type": "number",
+            "description": "Longitude do ponto de saída",
+            "example": -46.633308
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "user",
+          "type",
+          "checkIn",
+          "checkOut",
+          "hours",
+          "status",
+          "checkInLatitude",
+          "checkInLongitude"
+        ]
+      },
+      "CreateTeamDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da equipe",
+            "example": "Equipe de Manutenção A"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da equipe",
+            "example": "Equipe responsável pela manutenção da zona norte"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTeamDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da equipe",
+            "example": "Equipe de Manutenção A"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da equipe",
+            "example": "Equipe responsável pela manutenção da zona norte"
+          }
+        }
+      },
+      "TeamRole": {
+        "type": "string",
+        "enum": [
+          "LEADER",
+          "MEMBER"
+        ],
+        "description": "Função do membro na equipe"
+      },
+      "AddTeamMemberDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID do usuário",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "role": {
+            "description": "Função do membro na equipe",
+            "example": "MEMBER",
+            "examples": {
+              "LEADER": {
+                "value": "LEADER",
+                "description": "Líder da equipe"
+              },
+              "MEMBER": {
+                "value": "MEMBER",
+                "description": "Membro regular da equipe"
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TeamRole"
+              }
+            ]
+          }
+        },
+        "required": [
+          "userId",
+          "role"
+        ]
+      },
+      "UpdateTeamMemberDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "description": "Nova função do membro na equipe",
+            "example": "LEADER",
+            "examples": {
+              "LEADER": {
+                "value": "LEADER",
+                "description": "Líder da equipe"
+              },
+              "MEMBER": {
+                "value": "MEMBER",
+                "description": "Membro regular da equipe"
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TeamRole"
+              }
+            ]
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "ServiceOrderMaterialDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "ID do produto",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantidade do produto",
+            "example": 2
+          },
+          "isUsed": {
+            "type": "boolean",
+            "description": "Indica se o material foi utilizado",
+            "example": false
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CreateServiceOrderDto": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "ID do cliente",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "title": {
+            "type": "string",
+            "description": "Título da ordem de serviço",
+            "example": "Manutenção do ar condicionado"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição detalhada do serviço",
+            "example": "Cliente relatou que o ar condicionado não está gelando"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da ordem de serviço",
+            "enum": [
+              "PENDING",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "default": "PENDING"
+          },
+          "address": {
+            "type": "string",
+            "description": "Endereço do cliente",
+            "example": "Rua das Flores, 123"
+          },
+          "assignedTo": {
+            "type": "string",
+            "description": "ID do usuário designado",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "ID da equipe designada",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Latitude da localização",
+            "example": -23.55052
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Longitude da localização",
+            "example": -46.633308
+          },
+          "images": {
+            "type": "array",
+            "description": "Imagens em formato Buffer",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "materials": {
+            "description": "Materiais necessários para a ordem de serviço",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOrderMaterialDto"
+            }
+          }
+        },
+        "required": [
+          "clientId",
+          "title",
+          "description",
+          "status"
+        ]
+      },
+      "UpdateServiceOrderDto": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "ID do cliente",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "title": {
+            "type": "string",
+            "description": "Título da ordem de serviço",
+            "example": "Manutenção do ar condicionado"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição detalhada do serviço",
+            "example": "Cliente relatou que o ar condicionado não está gelando"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da ordem de serviço",
+            "enum": [
+              "PENDING",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "default": "PENDING"
+          },
+          "address": {
+            "type": "string",
+            "description": "Endereço do cliente",
+            "example": "Rua das Flores, 123"
+          },
+          "assignedTo": {
+            "type": "string",
+            "description": "ID do usuário designado",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "ID da equipe designada",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Latitude da localização",
+            "example": -23.55052
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Longitude da localização",
+            "example": -46.633308
+          },
+          "images": {
+            "type": "array",
+            "description": "Imagens em formato Buffer",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "materials": {
+            "description": "Materiais necessários para a ordem de serviço",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOrderMaterialDto"
+            }
+          }
+        }
+      },
+      "CreateServiceOrderUpdateDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Mensagem de atualização",
+            "example": "Iniciada a manutenção do equipamento"
+          },
+          "images": {
+            "type": "array",
+            "description": "Imagens em formato Buffer",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Novo status da ordem de serviço",
+            "enum": [
+              "PENDING",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "description": "Endereço do cliente",
+            "example": "Rua das Flores, 123"
+          },
+          "materials": {
+            "description": "Materiais adicionais necessários",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOrderMaterialDto"
+            }
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do produto",
+            "example": "Ar Condicionado Split 12000 BTUs"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição do produto",
+            "example": "Ar condicionado split hi-wall 12000 BTUs frio"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço do produto",
+            "example": 1999.99,
+            "minimum": 0
+          },
+          "stock": {
+            "type": "number",
+            "description": "Quantidade em estoque",
+            "example": 10
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL da imagem do produto",
+            "example": "https://exemplo.com/imagem.jpg"
+          },
+          "sku": {
+            "type": "string",
+            "description": "SKU do produto",
+            "example": "AC12000BTU"
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Código de barras",
+            "example": "7894900011517"
+          },
+          "category": {
+            "type": "string",
+            "description": "Categoria do produto",
+            "example": "Ar Condicionado"
+          },
+          "brand": {
+            "type": "string",
+            "description": "Marca do produto",
+            "example": "Samsung"
+          },
+          "minStock": {
+            "type": "number",
+            "description": "Estoque mínimo",
+            "example": 5,
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unidade de medida",
+            "example": "UN",
+            "default": "UN"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status do produto",
+            "example": true,
+            "default": true
+          },
+          "sector": {
+            "type": "string",
+            "description": "Setor do estoque",
+            "example": "A"
+          },
+          "aisle": {
+            "type": "string",
+            "description": "Corredor do estoque",
+            "example": "1"
+          },
+          "shelf": {
+            "type": "string",
+            "description": "Prateleira do estoque",
+            "example": "2"
+          },
+          "position": {
+            "type": "string",
+            "description": "Posição na prateleira",
+            "example": "3"
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "stock"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do produto",
+            "example": "Ar Condicionado Split 12000 BTUs"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição do produto",
+            "example": "Ar condicionado split hi-wall 12000 BTUs frio"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço do produto",
+            "example": 1999.99,
+            "minimum": 0
+          },
+          "stock": {
+            "type": "number",
+            "description": "Quantidade em estoque",
+            "example": 10
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL da imagem do produto",
+            "example": "https://exemplo.com/imagem.jpg"
+          },
+          "sku": {
+            "type": "string",
+            "description": "SKU do produto",
+            "example": "AC12000BTU"
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Código de barras",
+            "example": "7894900011517"
+          },
+          "category": {
+            "type": "string",
+            "description": "Categoria do produto",
+            "example": "Ar Condicionado"
+          },
+          "brand": {
+            "type": "string",
+            "description": "Marca do produto",
+            "example": "Samsung"
+          },
+          "minStock": {
+            "type": "number",
+            "description": "Estoque mínimo",
+            "example": 5,
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unidade de medida",
+            "example": "UN",
+            "default": "UN"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status do produto",
+            "example": true,
+            "default": true
+          },
+          "sector": {
+            "type": "string",
+            "description": "Setor do estoque",
+            "example": "A"
+          },
+          "aisle": {
+            "type": "string",
+            "description": "Corredor do estoque",
+            "example": "1"
+          },
+          "shelf": {
+            "type": "string",
+            "description": "Prateleira do estoque",
+            "example": "2"
+          },
+          "position": {
+            "type": "string",
+            "description": "Posição na prateleira",
+            "example": "3"
+          }
+        }
+      },
+      "QuotationItemDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Item type - product, service or custom",
+            "enum": [
+              "PRODUCT",
+              "SERVICE",
+              "CUSTOM"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "description": "Product or Service ID (required if type is PRODUCT or SERVICE)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Item name (required if type is CUSTOM)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Item description (optional)"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Item quantity"
+          },
+          "price": {
+            "type": "number",
+            "description": "Item price per unit"
+          }
+        },
+        "required": [
+          "type",
+          "itemId",
+          "name",
+          "description",
+          "quantity",
+          "price"
+        ]
+      },
+      "CreateQuotationDto": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "items": {
+            "description": "Quotation items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuotationItemDto"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Quotation status",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED"
+            ],
+            "default": "PENDING"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email to send the quotation (optional if client already has email)"
+          }
+        },
+        "required": [
+          "clientId",
+          "items",
+          "status",
+          "email"
+        ]
+      },
+      "UpdateQuotationDto": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "items": {
+            "description": "Quotation items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuotationItemDto"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Quotation status",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED"
+            ],
+            "default": "PENDING"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email to send the quotation (optional if client already has email)"
+          }
+        }
+      },
+      "ApproveQuotationDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "description": "Quotation status",
+            "enum": [
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Message or reason for approval/rejection (optional)"
+          }
+        },
+        "required": [
+          "decision",
+          "message"
+        ]
+      },
+      "CreateClientDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do cliente",
+            "example": "João Silva"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email do cliente",
+            "example": "joao.silva@email.com"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "Nome da empresa do cliente",
+            "example": "Empresa do João Silva"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Telefone do cliente",
+            "example": "(11) 99999-9999"
+          },
+          "document": {
+            "type": "string",
+            "description": "Documento do cliente (CPF/CNPJ)",
+            "example": "123.456.789-00"
+          },
+          "address": {
+            "type": "string",
+            "description": "Endereço do cliente",
+            "example": "Rua das Flores, 123"
+          },
+          "city": {
+            "type": "string",
+            "description": "Cidade do cliente",
+            "example": "São Paulo"
+          },
+          "state": {
+            "type": "string",
+            "description": "Estado do cliente",
+            "example": "SP"
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "CEP do cliente",
+            "example": "01234-567"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status do cliente",
+            "example": true,
+            "default": true
+          }
+        },
+        "required": [
+          "name",
+          "isActive"
+        ]
+      },
+      "UpdateClientDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do cliente",
+            "example": "João Silva"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email do cliente",
+            "example": "joao.silva@email.com"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "Nome da empresa do cliente",
+            "example": "Empresa do João Silva"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Telefone do cliente",
+            "example": "(11) 99999-9999"
+          },
+          "document": {
+            "type": "string",
+            "description": "Documento do cliente (CPF/CNPJ)",
+            "example": "123.456.789-00"
+          },
+          "address": {
+            "type": "string",
+            "description": "Endereço do cliente",
+            "example": "Rua das Flores, 123"
+          },
+          "city": {
+            "type": "string",
+            "description": "Cidade do cliente",
+            "example": "São Paulo"
+          },
+          "state": {
+            "type": "string",
+            "description": "Estado do cliente",
+            "example": "SP"
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "CEP do cliente",
+            "example": "01234-567"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status do cliente",
+            "example": true,
+            "default": true
+          }
+        }
+      },
+      "CreatePaymentDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID do funcionário"
+          },
+          "paymentDate": {
+            "type": "string",
+            "description": "Data do pagamento"
+          },
+          "startPeriod": {
+            "type": "string",
+            "description": "Data de início do período"
+          },
+          "endPeriod": {
+            "type": "string",
+            "description": "Data de fim do período"
+          },
+          "method": {
+            "type": "string",
+            "description": "Método de pagamento",
+            "enum": [
+              "CASH",
+              "CHECK",
+              "ZELLE",
+              "BANK_TRANSFER",
+              "OTHER"
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "description": "Referência do pagamento (número do cheque, etc.)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "salesAmount": {
+            "type": "number",
+            "description": "Valor de vendas para cálculo de comissão"
+          },
+          "extraAmount": {
+            "type": "number",
+            "description": "Valor extra a ser adicionado ao pagamento"
+          },
+          "extraAmountReason": {
+            "type": "string",
+            "description": "Razão para o valor extra"
+          },
+          "deductAdvances": {
+            "type": "boolean",
+            "description": "Se deve descontar adiantamentos pendentes",
+            "default": true
+          }
+        },
+        "required": [
+          "userId",
+          "paymentDate",
+          "startPeriod",
+          "endPeriod",
+          "method"
+        ]
+      },
+      "CreateAdvanceDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID do funcionário"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Valor do adiantamento"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Motivo do adiantamento"
+          },
+          "installments": {
+            "type": "number",
+            "description": "Número de parcelas para desconto",
+            "default": 1
+          }
+        },
+        "required": [
+          "userId",
+          "amount"
+        ]
+      },
+      "CreateCompensationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateCompensationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "GenerateBatchPaymentsDto": {
+        "type": "object",
+        "properties": {
+          "startPeriod": {
+            "type": "string",
+            "description": "Data de início do período"
+          },
+          "endPeriod": {
+            "type": "string",
+            "description": "Data de fim do período"
+          },
+          "defaultMethod": {
+            "type": "string",
+            "description": "Método de pagamento padrão",
+            "enum": [
+              "CASH",
+              "CHECK",
+              "ZELLE",
+              "BANK_TRANSFER",
+              "OTHER"
+            ]
+          }
+        },
+        "required": [
+          "startPeriod",
+          "endPeriod",
+          "defaultMethod"
+        ]
+      },
+      "UpdatePaymentDto": {
+        "type": "object",
+        "properties": {
+          "extraAmount": {
+            "type": "number",
+            "description": "Valor extra a ser adicionado ao pagamento"
+          },
+          "extraAmountReason": {
+            "type": "string",
+            "description": "Motivo do valor extra"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notas adicionais sobre o pagamento"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do pagamento"
+          }
+        }
+      },
+      "CreateScheduleDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateServiceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do serviço"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição do serviço"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço do serviço"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status do serviço",
+            "default": true
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "isActive"
+        ]
+      },
+      "UpdateServiceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do serviço"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição do serviço"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço do serviço"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status do serviço",
+            "default": true
+          }
+        }
+      },
+      "CreateInvoiceDto": {
+        "type": "object",
+        "properties": {
+          "quotationId": {
+            "type": "string",
+            "description": "Quotation ID to create invoice from"
+          }
+        },
+        "required": [
+          "quotationId"
+        ]
+      },
+      "UpdateInvoiceDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Invoice status",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
       }
     }
   }
